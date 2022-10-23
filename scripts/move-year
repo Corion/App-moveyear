@@ -7,6 +7,12 @@ use File::Basename;
 use File::Path 'make_path';
 use File::Spec;
 
+=head1 NAME
+
+move-year - Move files to directories according to a date in their filename
+
+=cut
+
 my $date_type;
 GetOptions(
     'dry-run|n'            => \my $dry_run,
@@ -24,6 +30,8 @@ GetOptions(
     'create'               => \my $create_directories,
     'directory-style|s=s'  => \my $directory_style,
     'part-separator'       => \my $part_separator,
+
+    'i'                    => \my $dont_overwrite,
 
     'strict'               => \my $strict,
 );
