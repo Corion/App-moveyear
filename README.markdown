@@ -9,6 +9,11 @@ in the filenames.
 The files will be moved to the directories `~/Documents/finance/my-bank/2022`
 and `~/Documents/finance/taxes/2021` respectively. Directories will be created.
 
+Move files into subdirectories according to year/month
+
+    move-year --create -s ym --part-separator "/" -ym -i foo-2022-03.pdf ~/Documents/foo
+    # Moves the file into ~/Documents/foo/2022/03
+
 # Options
 
   * dry-run|n - only print, don't change anything
