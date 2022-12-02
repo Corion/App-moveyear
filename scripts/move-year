@@ -68,7 +68,6 @@ my %longname = (
 
 sub find_ymd {
     my( $source ) = @_;
-    use Regexp::Debugger;
     my $name = basename $source;
     if( $name!~ /$date_regex/ ) {
         return;
