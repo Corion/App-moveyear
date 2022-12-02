@@ -6,6 +6,7 @@ use File::Copy 'mv';
 use File::Basename;
 use File::Path 'make_path';
 use File::Spec;
+use Date::Extract 'find_ymd', 'guess_ymd', '%date_type', '%longname';
 
 =head1 NAME
 
@@ -43,56 +44,10 @@ $directory_style //= 'y';
 
 $date_type //= 'ymd';
 
-my %date_type = (
-    ymd => qr/(?<year>(?:20)\d\d)([-]?)(?<month>0\d|1[012])(\2)(?<day>[012]\d|3[01])/,
-    dmy => qr/(?<day>[012]\d|3[01])([-]?)(?<month>0\d|1[012])(\2)(?<year>(?:20)\d\d)/,
-    ym  => qr/(?<year>(?:20)\d\d)([-]?)(?<month>0\d|1[012])/,
-    my  => qr/(?<month>0\d|1[012])([-]?)(?<year>(?:20)\d\d)/,
-    y   => qr/(?<year>(?:20)\d\d)/,
-);
-
-$date_regex //= $date_type{ $date_type };
-
 my $target = pop @ARGV;
 
 if( ! -d $target ) {
     die "'$target' is not a directory";
-}
-
-# Should we also support hour, minute, second?!
-my %longname = (
-    'y' => 'year',
-    'm' => 'month',
-    'd' => 'day',
-);
-
-sub find_ymd {
-    my( $source ) = @_;
-    my $name = basename $source;
-    if( $name!~ /$date_regex/ ) {
-        return;
-    }
-
-    my %ymd;
-    if( keys %- ) { # we have named captures
-        for (keys %longname) {
-            $ymd{ $longname{ $_ } } //= $+{ $longname{ $_ }} // $+{ $_ };
-        }
-    } else {
-        my @ymd = split //, $date_regex_order;
-        for my $i (0..$#ymd) {
-            $ymd{ $longname{ $ymd[$i] }} //= substr( $source, $-[$i+1], $+[$i+1] );
-        }
-    };
-
-    $ymd{ year } += 2000 if $ymd{ year } < 100;
-    for my $n ( values %longname ) {
-        if( defined $ymd{ $n }) {
-            $ymd{ $n } = sprintf '%02d', $ymd{ $n };
-        }
-    };
-
-    return %ymd;
 }
 
 sub move_file {
@@ -124,9 +79,15 @@ sub move_file {
 }
 
 for my $file (@ARGV) {
-    my %ymd = find_ymd( $file );
-    if( keys %ymd ) {
-        move_file( $file, $target, %ymd )
+    my $ymd;
+    if( $date_regex ) {
+        $ymd = find_ymd( $date_regex, $file, $date_regex_order );
+
+    } else {
+        $ymd = guess_ymd( $file, components => $date_type, mode => 'strict' );
+    }
+    if( keys %$ymd ) {
+        move_file( $file, $target, %$ymd )
     } elsif( $strict ) {
         die "Could not find a date in '$file'\n";
     } else {
