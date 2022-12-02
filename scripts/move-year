@@ -44,11 +44,11 @@ $directory_style //= 'y';
 $date_type //= 'ymd';
 
 my %date_type = (
-    ymd => qr/(?<year>(?:20)\d\d)([-]?)(?<month>0\d|1[012])(\2)(?<day>[012]\d|3[01])/, 
-    dmy => qr/(?<day>[012]\d|3[01])([-]?)(?<month>0\d|1[012])(\2)(?<year>(?:20)\d\d)/, 
-    ym  => qr/(?<year>(?:20)\d\d)([-]?)(?<month>0\d|1[012])/, 
-    my  => qr/(?<month>0\d|1[012])([-]?)(?<year>(?:20)\d\d)/, 
-    y   => qr/(?<year>(?:20)\d\d)/, 
+    ymd => qr/(?<year>(?:20)\d\d)([-]?)(?<month>0\d|1[012])(\2)(?<day>[012]\d|3[01])/,
+    dmy => qr/(?<day>[012]\d|3[01])([-]?)(?<month>0\d|1[012])(\2)(?<year>(?:20)\d\d)/,
+    ym  => qr/(?<year>(?:20)\d\d)([-]?)(?<month>0\d|1[012])/,
+    my  => qr/(?<month>0\d|1[012])([-]?)(?<year>(?:20)\d\d)/,
+    y   => qr/(?<year>(?:20)\d\d)/,
 );
 
 $date_regex //= $date_type{ $date_type };
