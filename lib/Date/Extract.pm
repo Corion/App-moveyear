@@ -159,7 +159,9 @@ sub guess_ymd( $sources, %options ) {
                     for @{$values->{$dt}};
             }
         }
-        return map { $res{ $_ } ? $res{ $_ } : () } @$sources;
+        my @res = map { $res{ $_ } ? $res{ $_ } : () } @$sources;
+        return wantarray ? @res : $res[0];
+        
 
     } else {
         (my $max) = sort { @$b <=> @$a } values %$values;
