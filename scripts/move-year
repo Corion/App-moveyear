@@ -73,7 +73,7 @@ sub move_file {
             print "Moving '$source' to '$target_file'\n";
         }
         if( ! $dry_run ) {
-            mv $source => $target_file;
+            mv $source => $target_file or warn "$source: $!";
         };
     }
 }
