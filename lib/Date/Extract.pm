@@ -138,15 +138,16 @@ sub guess_ymd( $sources, %options ) {
     my $values = guess_date_format( $sources, %options );
 
     my $fmt;
-    if( $values->{no_date} && $options{ mode } eq 'strict') {
+    if( $values->{no_date} and @{ $values->{no_date}} and $options{ mode } eq 'strict') {
         # Maybe we don't want croak?!
-        croak "Entries without a date found.";
+        croak "Entries without a date found: " . join " ", @{ $values->{no_date} };
     };
     delete $values->{no_date}; # we can't do anything about them
 
     if( scalar keys %$values == 1 ) {
         # Only one kind of format, so we use that
         ($fmt) = keys %$values;
+
     } elsif( $options{ components }) {
         # Find all entries that have the wanted components and be done with it
         my $s = join "", sort split //, $options{ components };
