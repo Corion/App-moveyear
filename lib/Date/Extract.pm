@@ -4,6 +4,8 @@ use Filter::signatures;
 use feature 'signatures';
 no warnings 'experimental::signatures';
 
+use utf8; # we store month names in this file
+
 use Exporter 'import';
 use Carp 'croak';
 our @EXPORT_OK = qw(find_ymd find_all_ymd guess_ymd
@@ -44,13 +46,55 @@ Date::Extract - extract year, month, day from (filename) strings
 
 =cut
 
+our %month_names = (
+    # English
+    'january'   => 1,
+    'february'  => 2,
+    'march'     => 3,
+    'april'     => 4,
+    'may'       => 5,
+    'june'      => 6,
+    'july'      => 7,
+    'august'    => 8,
+    'september' => 9,
+    'october'   => 10,
+    'november'  => 11,
+    'december'  => 12,
+
+    # German
+    'januar'    => 1,
+    'februar'   => 2,
+    'maerz'     => 3,
+    'märz'      => 3,
+    'april'     => 4,
+    'mai'       => 5,
+    'juni'      => 6,
+    'juli'      => 7,
+    'august'    => 8,
+    'september' => 9,
+    'oktober'   => 10,
+    'november'  => 11,
+    'dezember'  => 12,
+);
+
+our $dxy =
+    qr/(?<day>[12]\d|3[01]|0?\d)(?:[.]?)\s*/
+    . "(?<monthname>(?i)"
+    . join( "|",
+          map { /^(...)(.*)$/; $2 ? "$1($2)?" : $1  } reverse sort keys %month_names)
+    . ")"
+    . qr/\s+(?<year>(?:20)\d\d)\b/
+    ;
+
 our %date_type = (
     ymd => qr/(?<year>(?:20)\d\d)([-]?)(?<month>0\d|1[012])(\2)(?<day>[012]\d|3[01])/,
     dmy => qr/(?<day>[012]\d|3[01])([-.]?)(?<month>0\d|1[012])(\2)(?<year>(?:20)\d\d)/,
+    dxy => $dxy,
     ym  => qr/(?<year>(?:20)\d\d)([-]?)(?<month>0\d|1[012])/,
     my  => qr/(?<month>0\d|1[012])([-.]?)(?<year>(?:20)\d\d)/,
     y   => [qr/\D(?<year>(?:20)\d\d)\D/, qr/(?<year>(?:20)\d\d)/],
 );
+
 
 our @default_preference = sort { length $b <=> length $a || $b cmp $a } keys %date_type;
 
@@ -58,6 +102,7 @@ our @default_preference = sort { length $b <=> length $a || $b cmp $a } keys %da
 our %longname = (
     'y' => 'year',
     'm' => 'month',
+    'x' => 'monthname',
     'd' => 'day',
 );
 
@@ -83,10 +128,26 @@ sub find_ymd( $date_regex, $source, $date_regex_order='ymd' ) {
         }
     };
 
+    # map month names to month numbers
+    if( $ymd{monthname} ) {
+
+        if( ! exists $month_names{ lc $ymd{ monthname }}) {
+            die "Whoops unknown month '$ymd{ monthname }'";
+        };
+
+        $ymd{month} = $month_names{ lc( delete $ymd{ monthname })};
+    } else {
+        delete $ymd{ monthname };
+    }
+
     $ymd{ year } += 2000 if $ymd{ year } < 100;
     for my $n ( values %longname ) {
+        next if $n eq 'monthname';
+
         $ymd{ $n } = sprintf '%02d', $ymd{ $n };
     };
+
+    delete $ymd{ monthname };
 
     return \%ymd;
 }
@@ -161,7 +222,7 @@ sub guess_ymd( $sources, %options ) {
         }
         my @res = map { $res{ $_ } ? $res{ $_ } : () } @$sources;
         return wantarray ? @res : $res[0];
-        
+
 
     } else {
         (my $max) = sort { @$b <=> @$a } values %$values;
