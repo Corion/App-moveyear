@@ -1,4 +1,4 @@
-package Date::Extract;
+package Date::Find 0.01;
 use strict;
 use Filter::signatures;
 use feature 'signatures';
@@ -12,11 +12,9 @@ our @EXPORT_OK = qw(find_ymd find_all_ymd guess_ymd
                     %date_type %longname
                    );
 
-our $VERSION = '0.01';
-
 =head1 NAME
 
-Date::Extract - extract year, month, day from (filename) strings
+Date::Find - find year, month, day from (filename) strings
 
 =head1 SYNOPSIS
 
@@ -240,3 +238,9 @@ sub guess_ymd( $sources, %options ) {
 }
 
 1;
+
+=head1 SEE ALSO
+
+L<Date::Extract> - extract dates from more arbitrary text
+
+=cut
