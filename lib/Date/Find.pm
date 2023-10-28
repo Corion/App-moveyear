@@ -84,10 +84,21 @@ our $dxy =
     . qr/\s+(?<year>(?:20)\d\d)\b/
     ;
 
+# Februar 27, 2023
+our $xdy =
+      "(?<monthname>(?i)"
+    . join( "|",
+          map { /^(...)(.*)$/; $2 ? "$1($2)?" : $1  } reverse sort keys %month_names)
+    . ")"
+    . qr/\s*(?<day>[12]\d|3[01]|0?\d)(?:[.,]?)\s*/
+    . qr/\s+(?<year>(?:20)\d\d)\b/
+    ;
+
 our %date_type = (
     ymd => qr/(?<year>(?:20)\d\d)([-]?)(?<month>0\d|1[012])(\2)(?<day>[012]\d|3[01])/,
     dmy => qr/(?<day>[012]\d|3[01])([-.]?)(?<month>0\d|1[012])(\2)(?<year>(?:20)\d\d)/,
     dxy => $dxy,
+    xdy => $xdy,
     ym  => qr/(?<year>(?:20)\d\d)([-]?)(?<month>0\d|1[012])/,
     my  => qr/(?<month>0\d|1[012])([-.]?)(?<year>(?:20)\d\d)/,
     y   => [qr/\D(?<year>(?:20)\d\d)\D/, qr/(?<year>(?:20)\d\d)/],
@@ -113,6 +124,8 @@ sub find_ymd( $date_regex, $source, $date_regex_order='ymd' ) {
     if( $source !~ /$date_regex/ ) {
         return;
     }
+
+# XXX note match start and end
 
     my %ymd;
     if( keys %- ) { # we have named captures
