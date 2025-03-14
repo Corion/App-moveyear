@@ -59,23 +59,33 @@ sub move_file {
                         map { $longname{ $_ } }
                         split //, $directory_style
     );
-    if( $create_directories && ! -d $target_dir ) {
-        if( $verbose ) {
-            print "Creating '$target_dir'\n";
+    if( ! -d $target_dir ) {
+        if( $create_directories ) {
+            if( $verbose ) {
+                print "Creating '$target_dir'\n";
+            }
+            if( ! $dry_run ) {
+                make_path $target_dir;
+            };
+        } else {
+            die "'$target_dir' does not exist (forgot --create ?)\n";
         }
-        if( ! $dry_run ) {
-            make_path $target_dir;
-        };
     }
     my $name = basename($source);
     my $target_file = "$target_dir/$name";
-    if(($dry_run || -d $target_dir) && (! -e $target_file || $force)) {
-        if( $verbose ) {
-            print "Moving '$source' to '$target_file'\n";
+    if(($dry_run || -d $target_dir)) {
+        if( not( -e $target_file) || $force) {
+            if( $verbose ) {
+                print "Moving '$source' to '$target_file'\n";
+            }
+            if( ! $dry_run ) {
+                mv $source => $target_file or warn "$source: $!";
+            };
+        } else {
+            if( $verbose ) {
+                print "'$target_file' already exists, skipped\n";
+            }
         }
-        if( ! $dry_run ) {
-            mv $source => $target_file or warn "$source: $!";
-        };
     }
 }
 
