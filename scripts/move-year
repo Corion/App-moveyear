@@ -38,6 +38,20 @@ GetOptions(
     'strict'               => \my $strict,
 );
 
+=head1 SYNOPSIS
+
+  move-year --create foo-2025.pdf /home/user/documents/
+  # creates /home/user/documents/2025
+  # Moves foo-2025.pdf to /home/user/documents/2025/foo-2025.pdf
+
+  move-year --create --directory-style=sprintf foo-2025.pdf "/home/user/documents/documents %y/"
+  # creates /home/user/documents/documents 2025/
+  # Moves foo-2025.pdf to /home/user/documents/documents 2025/foo-2025.pdf
+
+=head1 OPTIONS
+
+=cut
+
 $verbose //= $dry_run;
 
 $part_separator //= '-';
