@@ -61,18 +61,24 @@ $date_type //= 'ymd';
 
 my $target = pop @ARGV;
 
-if( ! -d $target ) {
+if( ! -d $target and $directory_style ne 'sprintf') {
     die "'$target' is not a directory";
 }
 
 sub move_file {
     my( $source,$target,%ymd ) = @_;
+    my $target_dir;
+    if( $directory_style eq 'sprintf' ) {
+        $target_dir = $target =~ s/%([ymd])/$ymd{ $longname{ $1 }}/reg;
 
-    my $target_dir = File::Spec->catdir( $target,
+    } else {
+
+        $target_dir = File::Spec->catdir( $target,
                         map { $ymd{ $_ } }
                         map { $longname{ $_ } }
                         split //, $directory_style
-    );
+        );
+    }
     if( ! -d $target_dir ) {
         if( $create_directories ) {
             if( $verbose ) {
