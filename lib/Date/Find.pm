@@ -16,6 +16,8 @@ Date::Find - find year, month, day from (filename) strings
 
 =head1 SYNOPSIS
 
+  use 5.020;
+
   my $info = guess_ymd('statement_20221201.pdf');
   say "$info->{value} - $info->{year} - $info->{month} - $info->{day}";
   # statement_20221201.pdf - 2022 - 12 - 01
