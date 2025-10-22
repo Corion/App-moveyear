@@ -1,8 +1,8 @@
-#!perl3
-use strict;
-use Test2::V0;
+#!perl
+use 5.020;
+use Test2::V0 '-no_srand';
 use Data::Dumper;
-use Date::Extract 'guess_ymd', 'find_all_ymd';
+use Date::Find 'guess_ymd', 'find_all_ymd';
 
 my @tests_find = (
     #{ name => 'Simple ymd',

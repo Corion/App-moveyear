@@ -1,8 +1,6 @@
 package Date::Find 0.01;
-use strict;
-use Filter::signatures;
-use feature 'signatures';
-no warnings 'experimental::signatures';
+use 5.020;
+use experimental 'signatures';
 
 use utf8; # we store month names in this file
 
