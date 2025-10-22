@@ -219,15 +219,14 @@ sub guess_ymd( $sources, %options ) {
     if( scalar keys %$values == 1 ) {
         # Only one kind of format, so we use that
         ($fmt) = keys %$values;
-
     } elsif( $options{ components }) {
         # Find all entries that have the wanted components and be done with it
         my $s = join "", sort split //, $options{ components };
         my %res;
-        for my $dt (keys %$values) {
+        for my $dt (sort { length $b <=> length $a || $a cmp $b } keys %$values) {
             my $comp = join "", sort split //, $dt;
             if( $comp =~ /$s/ ) {
-                $res{ $_->{value} } = $_
+                $res{ $_->{value} } //= $_
                     for @{$values->{$dt}};
             }
         }
