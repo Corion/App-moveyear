@@ -253,4 +253,6 @@ sub guess_ymd( $sources, %options ) {
 
 L<Date::Extract> - extract dates from more arbitrary text
 
+L<Filename::Timestamp> - extract date and time from filenames, with timezone
+
 =cut

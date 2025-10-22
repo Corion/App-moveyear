@@ -40,3 +40,5 @@ Date::Find - find year, month, day from (filename) strings
 # SEE ALSO
 
 [Date::Extract](https://metacpan.org/pod/Date%3A%3AExtract) - extract dates from more arbitrary text
+
+[Filename::Timestamp](https://metacpan.org/pod/Filename%3A%3ATimestamp) - extract date and time from filenames, with timezone
