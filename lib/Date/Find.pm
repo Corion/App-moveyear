@@ -125,8 +125,6 @@ sub find_ymd( $date_regex, $source, $date_regex_order='ymd' ) {
         return;
     }
 
-# XXX note match start and end
-
     my %ymd;
     if( keys %- ) { # we have named captures
         for (keys %longname) {
