@@ -60,6 +60,13 @@ my @tests_guess = (
       options => { components => 'y' },
       list => ['8 May 2023', '8. Mai 2023']
     },
+    # 2025.07.05_20250709205555.pdf
+    { name => 'Multiple potential years',
+      expected => [
+      ],
+      options => { components => 'y' },
+      list => ['2025.07.05_20250709205555.pdf']
+    },
 );
 
 plan tests => 0+@tests_guess+@tests_find;
