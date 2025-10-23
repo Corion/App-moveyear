@@ -220,7 +220,18 @@ sub guess_ymd( $sources, %options ) {
     } elsif( $options{ components }) {
         # Find all entries that have the wanted components and be done with it
         my $s = join "", sort split //, $options{ components };
+
         my %res;
+
+        # First, fill in from what the user specified, then fill in the remaining
+        # components from other guesses
+        if( $values->{ $options{ components }}) {
+            my $dt = $options{ components };
+            $res{ $_->{value} } //= $_
+                for @{$values->{$dt}};
+        }
+
+        # Fill in the remaining stuff from other guesses
         for my $dt (sort { length $b <=> length $a || $a cmp $b } keys %$values) {
             my $comp = join "", sort split //, $dt;
             if( $comp =~ /$s/ ) {
@@ -230,7 +241,6 @@ sub guess_ymd( $sources, %options ) {
         }
         my @res = map { $res{ $_ } ? $res{ $_ } : () } @$sources;
         return wantarray ? @res : $res[0];
-
 
     } else {
         (my $max) = sort { @$b <=> @$a } values %$values;
