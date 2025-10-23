@@ -58,6 +58,7 @@ my %module = (
         'File::Path'     => '0',
         'File::Spec'     => '0',
         'Getopt::Long'   => '0',
+        'Pod::Usage'     => '0'
     },
     TEST_REQUIRES =>     {
         'Data::Dumper'  => '0',

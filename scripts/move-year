@@ -6,8 +6,9 @@ use File::Copy 'mv';
 use File::Basename;
 use File::Path 'make_path';
 use File::Spec;
-use lib '/home/corion/Projekte/App-moveyear/lib';
 use Date::Find 'find_ymd', 'guess_ymd', '%date_type', '%longname';
+use Pod::Usage;
+
 
 =head1 NAME
 
@@ -19,6 +20,7 @@ my $date_type;
 GetOptions(
     'dry-run|n'            => \my $dry_run,
     'verbose'              => \my $verbose,
+    'help'                 => \my $help,
 
     'date-regex|d=s'       => \my $date_regex,
     'date-regex-order|o=s' => \my $date_regex_order,
@@ -36,7 +38,9 @@ GetOptions(
     'i'                    => \my $dont_overwrite,
 
     'strict'               => \my $strict,
-);
+) or pod2usage(2);
+pod2usage(1) if $help;
+pod2usage("$0: No files given.")  if (@ARGV == 0);
 
 =head1 SYNOPSIS
 
