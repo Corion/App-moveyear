@@ -85,6 +85,9 @@ Create directories if they don't exist.
 
 Elements of the intermediate directory to be created. Defaults to B<y>.
 
+Use B<--directory-style=sprintf> to specify your own template. B<%y>, B<%m> and B<%d>
+will be replaced by their respective values in the target directory name.
+
 =item B<--part-separator>
 
 Separator for the elements of the intermediate directory. Defaults to B<->.
@@ -140,6 +143,7 @@ if( ! -d $target and $directory_style ne 'sprintf') {
 sub move_file {
     my( $source,$target,%ymd ) = @_;
     my $target_dir;
+
     if( $directory_style eq 'sprintf' ) {
         $target_dir = $target =~ s/%([ymd])/$ymd{ $longname{ $1 }}/reg;
 
