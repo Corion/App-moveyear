@@ -127,7 +127,11 @@ $directory_style //= 'y';
 
 $date_type //= 'ymd';
 
-my $target = pop @ARGV;
+$create_directories //= $ENV{'MOVE_YEAR_CREATE'};
+
+my $target = ( -f $ARGV[-1] and exists $ENV{'MOVE_YEAR_TARGET'})
+  ? $ENV{'MOVE_YEAR_TARGET'}
+  : pop(@ARGV);
 
 if( ! -d $target and $directory_style ne 'sprintf') {
     die "'$target' is not a directory";
@@ -193,3 +197,19 @@ for my $file (@ARGV) {
         warn "Skipping '$file' (no date found)\n";
     }
 }
+
+=head1 ENVIRONMENT VARIABLES
+
+=over 4
+
+=item B<MOVE_YEAR_CREATE>
+
+Set the C<<--create>> option from the environment
+
+=item B<MOVE_YEAR_TARGET>
+
+Set the target directory
+
+=back
+
+=cut
