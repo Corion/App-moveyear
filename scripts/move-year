@@ -160,7 +160,7 @@ sub move_file {
                 make_path $target_dir;
             };
         } else {
-            die "'$target_dir' does not exist (forgot --create ?)\n";
+            die "'$target_dir' does not exist for $source (forgot --create ?)\n";
         }
     }
     my $name = basename($source);
