@@ -115,8 +115,19 @@ our %longname = (
     'd' => 'day',
 );
 
-=head2 C<< find_ymd >>
+=head1 FUNCTIONS
 
+=head2 C<< find_ymd $date_regex, $source, $date_regex_order >>
+
+  my $r = find_ymd( 'dmy', 'my-filename-01012025.pdf' );
+  # {
+  #    d => '01',
+  #    m => '01',
+  #    y => '2025'
+  # }
+
+Finds a date fitting the given regular expression and extracts it into
+a hashref with the found parts.
 
 =cut
 
@@ -161,8 +172,20 @@ sub find_ymd( $date_regex, $source, $date_regex_order='ymd' ) {
     return \%ymd;
 }
 
+=head2 C<< find_all_ymd >>
+
+    my %res = find_all_ymd('my-filename-20250101.pdf');
+    # y   => {...}
+    # ym  => {...}
+    # ymd => {...}
+    # dmy => {...}
+
+Finds all matches for dates in the filename and returns a hash
+keyed by the date type of each match.
+
+=cut
+
 sub find_all_ymd( $source, %options ) {
-    # $options{ preference } //= \@default_preference;
     my %res;
     for my $dt (sort keys %date_type) {
         my @attempts = ref $date_type{ $dt } eq 'ARRAY' ? @{ $date_type{ $dt } } : $date_type{ $dt };
@@ -175,10 +198,24 @@ sub find_all_ymd( $source, %options ) {
         }
     }
 
-    #if( $options{ }) {
-    #}
     return %res
 }
+
+=head2 C<< guess_date_format $sources, %options >>
+
+  my $by_found_date = guess_date_format( \@files );
+  # {
+  #     'no_date' => [ ... ],
+  #     'ymd'     => [ ... ],
+  # }
+  for my $file ($by_found_date->{ no_date }) {
+      say "No date found in $file->{value}";
+  }
+
+Guesses the date formats for all items in the lists and puts them into
+the buckets for each matched date format.
+
+=cut
 
 sub guess_date_format( $sources, %options ) {
     $sources = [$sources] unless ref $sources eq 'ARRAY';
@@ -197,6 +234,44 @@ sub guess_date_format( $sources, %options ) {
     }
     return \%res
 }
+
+=head2 C<< guess_ymd $sources, %options >>
+
+  my @results = guess_ymd( \@files, { preference => ['dmy', 'ymd'] } );
+
+  for my $f (@results) {
+    say $f->{value}, $f->{y}, $f->{m}, $f->{d}
+  }
+
+Guesses the date format common to most files and returns that list. The other
+files are ignored.
+
+Options:
+
+=over 4
+
+=item B<mode>
+
+  mode => 'lax'
+
+If you enable strict mode, an exception will be thrown for files for which no
+date can be found.
+
+=item B<preference>
+
+  preference => ['dxy','ymd']
+
+The order in which alternatives should be tried when looking for a date.
+
+=item B<components>
+
+  components => 'dmy',
+
+The components you want in the date.
+
+=back
+
+=cut
 
 sub guess_ymd( $sources, %options ) {
     $options{ mode } //= 'lax';
