@@ -9,6 +9,7 @@ use File::Spec;
 use Date::Find 'find_ymd', 'guess_ymd', '%date_type', '%longname';
 use Pod::Usage;
 
+our $VERSION = '0.03';
 
 =head1 NAME
 
