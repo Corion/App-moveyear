@@ -46,7 +46,7 @@ my @tests_guess = (
     },
     { name => 'Only a year, but best attempt',
       expected => [
-          { value => '1042099_2022.pdf', year => '2099', month => '04', day => '00'},
+          { value => '1042099_2022.pdf', year => '2022', month => '00', day => '00'},
           { value => '2099_2022_0004.pdf', year => '2022', month => '00', day => '00'},
       ],
       options => { components => 'y' },
@@ -57,12 +57,13 @@ my @tests_guess = (
           { value => '8 May 2023', year => '2023', month => '05', day => '08'},
           { value => '8. Mai 2023', year => '2023', month => '05', day => '08'},
       ],
-      options => { components => 'y' },
+      options => { components => 'xdy' },
       list => ['8 May 2023', '8. Mai 2023']
     },
     # 2025.07.05_20250709205555.pdf
     { name => 'Multiple potential years',
       expected => [
+          { value => '2025.07.05_20250709205555.pdf', year => '2025', month => '00', day => '00'},
       ],
       options => { components => 'y' },
       list => ['2025.07.05_20250709205555.pdf']
